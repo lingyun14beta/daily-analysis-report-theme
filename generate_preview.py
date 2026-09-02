@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 TPL = ROOT / "gda_sky_diary"
 OUT_DIR = ROOT / "assets"
 OUT_JPG = OUT_DIR / "gda_sky_diary-demo.jpg"
+OUT_THUMB = OUT_DIR / "gda_sky_diary-demo-thumb.jpg"
 OUT_PNG = OUT_DIR / "gda_sky_diary-demo.png"
 
 # ---------- 1) 构造示例数据并渲染 ----------
@@ -202,6 +203,12 @@ with tempfile.TemporaryDirectory(prefix="tpl_preview_") as tmp:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     cropped.save(OUT_JPG, "JPEG", quality=88)
     print(f"[ok] 预览图已生成: {OUT_JPG} ({cropped.size[0]}x{cropped.size[1]})")
+
+    # README 使用的缩略图（宽 420，保持比例）
+    thumb = cropped.copy()
+    thumb.thumbnail((420, 1200))
+    thumb.save(OUT_THUMB, "JPEG", quality=85)
+    print(f"[ok] 缩略图已生成: {OUT_THUMB} ({thumb.size[0]}x{thumb.size[1]})")
 
     # 复制一份到模板目录（随 zip 打包安装后，QQ /查看模板 即可显示该预览图）
     cropped.save(TPL / "preview.jpg", "JPEG", quality=88)
