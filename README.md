@@ -66,7 +66,8 @@ daily-analysis-report-theme/
 | 根目录 | 允许外层套一层目录（`repo-main` 形式自动剥离） |
 | 大小 | 解压后 ≤ 64MB、单文件 ≤ 20MB、成员 ≤ 300 |
 | 命名 | 建议小写英文蛇形（如 `gda_xxx`）、≤ 50 字符、无空格与特殊字符；与内置模板重名会被拒绝 |
-| 显示名 | 可选 `template.json`：`{"name": "中文名", "desc": "说明"}` |
+| 显示名 | 可选 `template.json`：`{"name": "中文名", "desc": "说明", "tag": "水蓝色", "tag_color": "blue"}`（desc 显示在 WebUI 下拉/卸载弹窗，tag/tag_color 为下拉中的风格标签） |
+| 预览图 | 可选 `preview.jpg/png` 或 `demo.jpg/png` 放在模板目录内：随 zip 一起打包安装后，QQ `/查看模板` 即可显示该预览图 |
 
 ## 渲染变量契约
 

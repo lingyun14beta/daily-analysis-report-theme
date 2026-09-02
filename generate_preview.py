@@ -202,3 +202,7 @@ with tempfile.TemporaryDirectory(prefix="tpl_preview_") as tmp:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     cropped.save(OUT_JPG, "JPEG", quality=88)
     print(f"[ok] 预览图已生成: {OUT_JPG} ({cropped.size[0]}x{cropped.size[1]})")
+
+    # 复制一份到模板目录（随 zip 打包安装后，QQ /查看模板 即可显示该预览图）
+    cropped.save(TPL / "preview.jpg", "JPEG", quality=88)
+    print(f"[ok] 已同步模板目录预览图: {TPL / 'preview.jpg'}")

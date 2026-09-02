@@ -1,0 +1,8 @@
+feat: template.json 扩展展示元信息 + 预览图随模板打包
+
+- template.json 增加 tag/tag_color 字段（WebUI 下拉显示「天空日记 [清新渐变]」）
+- 预览图复制为 gda_sky_diary/preview.jpg 随模板打包：
+  安装后 QQ /查看模板 直接显示该图，无需上传到插件仓库 assets/
+- generate_preview.py 同步输出模板目录预览图
+- verify_e2e.py：端到端校验元信息透出 / 预览图解析优先级 / 列表识别
+- README 更新打包规范（template.json 字段表、随包预览图）
