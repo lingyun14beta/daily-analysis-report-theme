@@ -5,6 +5,8 @@
 
 内置模板：**`gda_sky_diary`（天空日记 Sky Diary）** —— 蓝白渐变现代简约风。
 
+<img src="assets/gda_sky_diary-demo.jpg" alt="天空日记预览图" width="520">
+
 ## 一键安装（推荐）
 
 在插件 Web 控制台 → 配置页 → 模板选择器旁「安装模板」→ GitHub 链接页签：
@@ -93,6 +95,18 @@ python verify_demo.py <插件仓库路径>   # 或 export PLUGIN_ROOT=<插件仓
 （任何变量缺失/结构错误立即报错）→ 模拟打包 zip 走一遍插件的安装/卸载流程。
 
 > 安装/卸载检查依赖插件仓库 `src/` 中的安装器（脚本内置 astrbot mock，可离线运行）。
+
+## 预览图生成
+
+仓库根提供 `generate_preview.py`，用无头浏览器（Chrome/Edge）渲染模板并生成
+`assets/gda_sky_diary-demo.jpg`：
+
+```bash
+python generate_preview.py
+```
+
+`verify_demo.py` 的 mock 数据在生成脚本中扩展成了更完整的示例内容
+（3 位群友、2 条金句、质量锐评等），修改模板后重跑即可刷新预览图。
 
 ## 许可
 
