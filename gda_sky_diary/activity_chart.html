@@ -1,0 +1,18 @@
+<div class="chart-section">
+    {% for item in chart_data %}
+    {% set bar_percentage = item.percentage | float %}
+    {% if bar_percentage < 0 %}
+    {% set bar_percentage = 0 %}
+    {% elif bar_percentage > 100 %}
+    {% set bar_percentage = 100 %}
+    {% endif %}
+
+    <div class="chart-column">
+        {% if item.count > 0 %}
+        <div class="chart-value">{{ item.count }}</div>
+        {% endif %}
+        <div class="chart-bar" style="height: {{ bar_percentage }}%;"></div>
+        <div class="chart-label">{{ "%02d" | format(item.hour) }}</div>
+    </div>
+    {% endfor %}
+</div>

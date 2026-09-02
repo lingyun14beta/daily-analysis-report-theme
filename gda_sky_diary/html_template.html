@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="{{ 'zh-CN' if t2i_font_source == 'Mainland' else 'zh-Hant' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>群聊日常分析 · {{ current_date }}</title>
+    <link rel="preconnect" href="{{ t2i_google_fonts_mirror }}">
+    <link rel="preconnect" href="{{ t2i_gstatic_mirror }}" crossorigin>
+    <link
+        href="{{ t2i_google_fonts_mirror }}/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --sky-top: #e3f4fd;
+            --sky-bottom: #ffffff;
+            --ink: #1f3a52;
+            --ink-soft: #5c7a93;
+            --line: #d7e9f5;
+            --card: #ffffff;
+            --accent: #4a9fd8;
+            --accent-deep: #2b6d9e;
+            --accent-light: #d6ecfa;
+            --warn: #f6a940;
+            --radius: 14px;
+            --font-title: 'ZCOOL XiaoWei', serif;
+            --font-body: {% if t2i_font_source == 'Mainland' %}'Noto Sans SC', 'Noto Sans TC'{% else %}'Noto Sans TC', 'Noto Sans SC'{% endif %}, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--ink);
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 420px);
+        }
+
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 44px 32px 60px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 18px 0 26px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--accent-deep);
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 4px 16px;
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-family: var(--font-title);
+            font-size: 36px;
+            color: var(--ink);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .hero-date {
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .hero-sun {
+            width: 54px;
+            height: 54px;
+            margin: 14px auto 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffe9b8, var(--warn));
+            box-shadow: 0 6px 18px rgba(246, 169, 64, 0.35);
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            margin-top: 18px;
+            box-shadow: 0 6px 16px rgba(43, 109, 158, 0.07);
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 19px;
+            color: var(--accent-deep);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 6px;
+            height: 18px;
+            border-radius: 3px;
+            background: var(--accent);
+        }
+
+        .kpi-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .kpi-card {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px 8px 14px;
+            box-shadow: 0 4px 10px rgba(43, 109, 158, 0.06);
+        }
+
+        .kpi-num {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--accent-deep);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 4px;
+        }
+
+        .peak-box {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            padding: 14px 18px;
+        }
+
+        .peak-icon {
+            font-size: 22px;
+        }
+
+        .peak-text {
+            font-size: 14px;
+            color: var(--accent-deep);
+        }
+
+        .peak-text b {
+            font-size: 16px;
+        }
+
+        .chart-section {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 190px;
+            padding: 26px 6px 4px;
+            margin-top: 10px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .chart-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            flex: 1;
+            margin: 0 2px;
+            position: relative;
+        }
+
+        .chart-bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            min-height: 3px;
+            background: var(--accent);
+            opacity: 0.85;
+            transition: height 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            opacity: 1;
+        }
+
+        .chart-value {
+            position: absolute;
+            top: -20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink-soft);
+            width: 100%;
+            text-align: center;
+        }
+
+        .chart-label {
+            margin-top: 8px;
+            font-size: 10px;
+            color: var(--ink-soft);
+            text-align: center;
+        }
+
+        .topic-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .topic-no {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: var(--accent-light);
+            color: var(--accent-deep);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .topic-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .topic-meta {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-bottom: 6px;
+        }
+
+        .topic-detail {
+            font-size: 13px;
+            color: var(--ink);
+            line-height: 1.7;
+        }
+
+        .title-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .title-card {
+            flex: 1 1 160px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f7fbfe;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .title-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--accent-light);
+        }
+
+        .title-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .title-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .title-title {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--accent-deep);
+            background: var(--accent-light);
+            border-radius: 6px;
+            padding: 2px 8px;
+            margin-top: 3px;
+        }
+
+        .title-mbti {
+            display: inline-block;
+            font-size: 10px;
+            color: #9d6c2f;
+            background: #fdf3e3;
+            border-radius: 6px;
+            padding: 2px 8px;
+            margin-left: 4px;
+            margin-top: 3px;
+        }
+
+        .title-reason {
+            font-size: 11px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        .quote-wrapper {
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .quote-wrapper:last-child {
+            border-bottom: none;
+        }
+
+        .q-flex {
+            display: flex;
+            gap: 12px;
+        }
+
+        .q-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--accent-light);
+        }
+
+        .q-sender {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-deep);
+            margin-bottom: 4px;
+        }
+
+        .q-bubble {
+            background: #f2f8fc;
+            border-radius: 10px;
+            border-top-left-radius: 2px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: var(--ink);
+            line-height: 1.65;
+        }
+
+        .q-note {
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-top: 6px;
+        }
+
+        .q-note .note-label {
+            color: var(--warn);
+            font-weight: 700;
+        }
+
+        .quality-summary {
+            font-size: 13px;
+            color: var(--ink);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .dim-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .dim-name {
+            width: 88px;
+            flex-shrink: 0;
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        .dim-bar-box {
+            flex: 1;
+            height: 10px;
+            border-radius: 5px;
+            background: var(--accent-light);
+            overflow: hidden;
+        }
+
+        .dim-bar {
+            height: 100%;
+            border-radius: 5px;
+            background: var(--accent);
+        }
+
+        .dim-comment {
+            flex: 1.6;
+            color: var(--ink-soft);
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 26px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--ink-soft);
+            line-height: 1.8;
+        }
+
+        .footer .token-line {
+            color: #89a5b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="hero">
+            <div class="hero-badge">DAILY GROUP DIGEST</div>
+            <div class="hero-title">群聊日常分析</div>
+            <div class="hero-date">{{ current_date }} · {{ current_datetime }}</div>
+            <div class="hero-sun"></div>
+        </div>
+
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-num">{{ message_count }}</div>
+                <div class="kpi-label">消息总数</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-num">{{ participant_count }}</div>
+                <div class="kpi-label">参与人数</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-num">{{ emoji_count }}</div>
+                <div class="kpi-label">表情包</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-num">{{ total_characters }}</div>
+                <div class="kpi-label">文字总量</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">今日活跃轨迹</div>
+            <div class="peak-box">
+                <div class="peak-icon">⏰</div>
+                <div class="peak-text">最活跃时段：<b>{{ most_active_period }}</b></div>
+            </div>
+            {{ hourly_chart_html | safe }}
+        </div>
+
+        <div class="section">
+            {{ topics_html | safe }}
+        </div>
+
+        <div class="section">
+            {{ titles_html | safe }}
+        </div>
+
+        <div class="section">
+            {{ quotes_html | safe }}
+        </div>
+
+        {% if chat_quality_html %}
+        <div class="section">
+            {{ chat_quality_html | safe }}
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <div>本报告由 AstrBot 群聊日常分析插件生成</div>
+            <div class="token-line">分析耗时 Token：{{ total_tokens }}（Prompt {{ prompt_tokens }} / 生成 {{ completion_tokens }}）</div>
+        </div>
+    </div>
+</body>
+
+</html>

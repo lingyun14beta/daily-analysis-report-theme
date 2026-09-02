@@ -1,0 +1,21 @@
+{% if title %}
+<div class="quality-summary"><b>{{ title }}</b>{% if subtitle %} · {{ subtitle }}{% endif %}</div>
+{% endif %}
+{% if summary %}
+<div class="quality-summary">{{ summary }}</div>
+{% endif %}
+{% if dimensions %}
+{% for dim in dimensions %}
+{% set safe_percentage = dim.percentage | float %}
+{% if safe_percentage < 0 %}
+{% set safe_percentage = 0 %}
+{% elif safe_percentage > 100 %}
+{% set safe_percentage = 100 %}
+{% endif %}
+<div class="dim-row">
+    <div class="dim-name">{{ dim.name }}</div>
+    <div class="dim-bar-box"><div class="dim-bar" style="width: {{ safe_percentage }}%;"></div></div>
+    <div class="dim-comment">{{ dim.comment }}</div>
+</div>
+{% endfor %}
+{% endif %}

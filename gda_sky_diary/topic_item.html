@@ -1,0 +1,13 @@
+{% if topics %}
+<div class="section-title">今日话题</div>
+{% for topic in topics %}
+<div class="topic-item avoid-break">
+    <div class="topic-no">#{{ "%02d" | format(topic.index) }}</div>
+    <div style="flex: 1; min-width: 0;">
+        <div class="topic-title">{{ topic.topic.topic }}</div>
+        <div class="topic-meta">🙋 参与者：{{ topic.contributors }}</div>
+        <div class="topic-detail">{{ topic.detail | safe }}</div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
