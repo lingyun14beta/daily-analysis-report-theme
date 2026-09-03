@@ -10,6 +10,15 @@
 >
 > 完整长图见 [assets/gda_sky_diary-demo.jpg](assets/gda_sky_diary-demo.jpg)。
 
+> 📌 **图片文件说明**（三张图用途不同，别混淆）：
+> - `assets/gda_sky_diary-demo-thumb.jpg` —— **本 README 展示用的缩略图**（宽 420，仅约 47KB），
+>   用于仓库首页快速预览效果；不参与模板运行，也不打包进 zip 之外的任何插件逻辑。
+> - `assets/gda_sky_diary-demo.jpg` —— **完整长图**（750×2311），README 以链接附上，供点开看全部细节。
+> - `gda_sky_diary/preview.jpg` —— **随模板打包的预览图**：用户安装本模板后，
+>   QQ `/查看模板` 与 WebUI 画廊显示的就是这张图（区别于上面两张仅作仓库展示）。
+>
+> 三者均由 `generate_preview.py` 一次生成。
+
 ## 一键安装（推荐）
 
 在插件 Web 控制台 → 配置页 → 模板选择器旁「安装模板」→ GitHub 链接页签：
