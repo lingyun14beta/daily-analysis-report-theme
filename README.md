@@ -78,10 +78,24 @@ daily-analysis-report-theme/
 | 根目录 | 允许外层套一层目录（`repo-main` 形式自动剥离） |
 | 大小 | 解压后 ≤ 64MB、单文件 ≤ 20MB、成员 ≤ 300 |
 | 命名 | 建议小写英文蛇形（如 `gda_xxx`）、≤ 50 字符、无空格与特殊字符；与内置模板重名会被拒绝 |
-| 显示名 | 可选 `template.json`：`{"name": "中文名", "desc": "说明", "tag": "水蓝色", "tag_color": "blue"}`（desc 显示在 WebUI 下拉/卸载弹窗，tag/tag_color 为下拉中的风格标签） |
+| 显示名 | 可选 `template.json` 放在模板根目录：`{"name": "中文名", "desc": "说明", "tag": "水蓝色", "tag_color": "blue"}`（desc 显示在 WebUI 下拉/卸载弹窗，tag/tag_color 为下拉中的风格标签；字段均可选，仅 name 也可） |
 | 预览图 | 可选 `preview.jpg/png` 或 `demo.jpg/png` 放在模板目录内：随 zip 一起打包安装后，QQ `/查看模板` 即可显示该预览图 |
 | 模板内引用图片 | 只能用**绝对 URL（公开图库链接）**或**内联 data URI / `<svg>`**——报告 HTML 是字符串交给远端 T2I 渲染服务，**相对路径（如 `assets/bg.png`）渲染时必然 404**；预览图（preview.jpg）除外。小图标建议 base64/内联 SVG，大装饰图建议放本仓库 `assets/<模板名>/` 后用 jsDelivr 绝对链接（参考内置 HatsuneMiku 模板的做法） |
 | 多余的脚本/文件 | 模板目录内可放置任意文件（安装器原样保留、运行时会忽略），但脚本类文件请留在仓库根，避免徒增 zip 体积 |
+
+> 完整 `template.json` 示例（放模板根目录，与 `image_template.html` 同级）：
+>
+> ```json
+> {
+>   "name": "天空日记 (Sky Diary)",
+>   "desc": "蓝白渐变现代简约风，清爽圆角卡片与轻盈阴影，适合日常群聊报告",
+>   "tag": "清新渐变",
+>   "tag_color": "blue"
+> }
+> ```
+>
+> 本仓库实际使用： [`gda_sky_diary/template.json`](gda_sky_diary/template.json)。
+> 字段均可选（仅 `name` 即可），字符串长度上限 100，仅支持 JSON。
 
 ## 渲染变量契约
 
